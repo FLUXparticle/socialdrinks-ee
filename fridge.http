@@ -1,0 +1,19 @@
+### 1. Zutaten aus dem Kühlschrank abrufen
+GET http://localhost:8080/api/fridge/ingredients
+Accept: application/json
+
+### 2. Zutat mit ID 7 als "im Kühlschrank" markieren
+PATCH http://localhost:8080/api/fridge/ingredients/7
+Content-Type: application/json
+
+{ "inFridge": true }
+
+### 3. Zutat mit ID 30 als "im Kühlschrank" markieren
+PATCH http://localhost:8080/api/fridge/ingredients/30
+Content-Type: application/json
+
+{ "inFridge": true }
+
+### 4. Mögliche Cocktails basierend auf dem Kühlschrankinhalt abrufen
+GET http://localhost:8080/api/fridge/possible
+Accept: application/json

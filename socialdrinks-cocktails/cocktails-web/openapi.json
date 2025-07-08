@@ -1,0 +1,703 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Socialdrinks Cocktails API",
+    "version": "1.0.0",
+    "description": "REST-API für Cocktails, Zutaten und den persönlichen Kühlschrank. Die Definition ist statisch gepflegt und enthält zusätzliche Beispiele für Antworten, die sich aus der Implementierung nicht besonders gut automatisch ableiten lassen."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Lokaler WildFly"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Cocktails",
+      "description": "Cocktail-Suche und Cocktail-Details"
+    },
+    {
+      "name": "Ingredients",
+      "description": "Zutaten und Cocktails pro Zutat"
+    },
+    {
+      "name": "Fridge",
+      "description": "Persönlicher Kühlschrank und daraus abgeleitete Ansichten"
+    }
+  ],
+  "paths": {
+    "/api/cocktails": {
+      "get": {
+        "tags": [
+          "Cocktails"
+        ],
+        "summary": "Alle Cocktails abrufen",
+        "description": "Liefert alle Cocktails als kompakte Liste ohne Instruktionsdetails.",
+        "operationId": "getAllCocktails",
+        "responses": {
+          "200": {
+            "description": "Liste aller Cocktails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CocktailSummary"
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "name": "Mandarinetto"
+                      },
+                      {
+                        "id": 26,
+                        "name": "Pink Power"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cocktails/{id}": {
+      "get": {
+        "tags": [
+          "Cocktails"
+        ],
+        "summary": "Cocktail per ID abrufen",
+        "description": "Liefert einen Cocktail inklusive seiner Instruktionen und Zutaten.",
+        "operationId": "getCocktail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID des Cocktails",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cocktail gefunden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CocktailDetails"
+                },
+                "examples": {
+                  "pinkPower": {
+                    "value": {
+                      "id": 26,
+                      "name": "Pink Power",
+                      "instructions": [
+                        {
+                          "amountCL": 4,
+                          "ingredient": {
+                            "id": 7,
+                            "name": "Fruchtsirup Preiselbeere"
+                          }
+                        },
+                        {
+                          "amountCL": 15,
+                          "ingredient": {
+                            "id": 30,
+                            "name": "Buttermilch"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cocktails/search": {
+      "get": {
+        "tags": [
+          "Cocktails"
+        ],
+        "summary": "Cocktails suchen",
+        "description": "Durchsucht Cocktails und Zutatennamen. Als Suchbegriff eignet sich in der Praxis ein Text ab etwa drei Zeichen.",
+        "operationId": "searchCocktails",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Suchbegriff",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Pink"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suchtreffer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CocktailSummary"
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": [
+                      {
+                        "id": 26,
+                        "name": "Pink Power"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ingredients": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Alle Zutaten abrufen",
+        "operationId": "getAllIngredients",
+        "responses": {
+          "200": {
+            "description": "Liste aller Zutaten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": [
+                      {
+                        "id": 7,
+                        "name": "Fruchtsirup Preiselbeere"
+                      },
+                      {
+                        "id": 30,
+                        "name": "Buttermilch"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ingredients/{id}": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Zutat per ID abrufen",
+        "operationId": "getIngredient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID der Zutat",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zutat gefunden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingredient"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "id": 30,
+                      "name": "Buttermilch"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ingredients/{id}/cocktails": {
+      "get": {
+        "tags": [
+          "Ingredients"
+        ],
+        "summary": "Cocktails zu einer Zutat abrufen",
+        "description": "Liefert den Namen der Zutat und alle Cocktails, die diese Zutat verwenden.",
+        "operationId": "getCocktailsWithIngredient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID der Zutat",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cocktails zur Zutat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngredientDetails"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "name": "Buttermilch",
+                      "cocktails": [
+                        {
+                          "id": 26,
+                          "name": "Pink Power"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fridge/whoami": {
+      "get": {
+        "tags": [
+          "Fridge"
+        ],
+        "summary": "Aktuellen Benutzer anzeigen",
+        "operationId": "whoAmI",
+        "responses": {
+          "200": {
+            "description": "Benutzer erkannt",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "default": {
+                    "value": "Hallo anonymous"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Kein Benutzer erkannt",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "default": {
+                    "value": "Nicht eingeloggt"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fridge/ingredients": {
+      "get": {
+        "tags": [
+          "Fridge"
+        ],
+        "summary": "Zutatenstatus des Kühlschranks abrufen",
+        "description": "Liefert eine flache Liste aller Zutaten inklusive Kennzeichen, ob sie aktuell im Kühlschrank liegen. Diese Struktur ist in der statischen Definition explizit beschrieben, weil die Implementierung intern Map-Objekte verwendet.",
+        "operationId": "getFridgeIngredients",
+        "responses": {
+          "200": {
+            "description": "Zutaten mit Kühlschrank-Status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FridgeIngredient"
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": [
+                      {
+                        "id": 7,
+                        "name": "Fruchtsirup Preiselbeere",
+                        "inFridge": true
+                      },
+                      {
+                        "id": 30,
+                        "name": "Buttermilch",
+                        "inFridge": false
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fridge/ingredients/{id}": {
+      "patch": {
+        "tags": [
+          "Fridge"
+        ],
+        "summary": "Zutatenstatus ändern",
+        "description": "Markiert eine Zutat als im Kühlschrank vorhanden oder entfernt sie daraus.",
+        "operationId": "updateIngredientStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID der Zutat",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngredientStatusUpdate"
+              },
+              "examples": {
+                "markPresent": {
+                  "value": {
+                    "inFridge": true
+                  }
+                },
+                "markMissing": {
+                  "value": {
+                    "inFridge": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status erfolgreich geändert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FridgeIngredient"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "id": 30,
+                      "name": "Buttermilch",
+                      "inFridge": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ungültiger Request-Body",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "default": {
+                    "value": "Missing 'inFridge' field in request body"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fridge/possible": {
+      "get": {
+        "tags": [
+          "Fridge"
+        ],
+        "summary": "Mögliche Cocktails abrufen",
+        "description": "Liefert alle Cocktails, die mit den aktuell im Kühlschrank vorhandenen Zutaten vollständig gemixt werden können.",
+        "operationId": "getPossibleCocktails",
+        "responses": {
+          "200": {
+            "description": "Mögliche Cocktails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CocktailSummary"
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": [
+                      {
+                        "id": 26,
+                        "name": "Pink Power"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fridge/shopping": {
+      "get": {
+        "tags": [
+          "Fridge"
+        ],
+        "summary": "Cocktails mit fehlenden Zutaten abrufen",
+        "description": "Liefert für nicht mögliche Cocktails die bereits vorhandenen und die noch fehlenden Zutaten. Für diese verschachtelte Struktur enthält die Definition ein explizites Beispiel.",
+        "operationId": "getCocktailsWithMissingIngredients",
+        "responses": {
+          "200": {
+            "description": "Shopping-Ansicht",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShoppingModel"
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": [
+                      {
+                        "cocktailName": "Summerfeeling",
+                        "presentIngredients": [
+                          "Fruchtsirup Preiselbeere"
+                        ],
+                        "missingIngredients": [
+                          "Pfirsichnektar",
+                          "Ananassaft"
+                        ]
+                      },
+                      {
+                        "cocktailName": "Pink Power",
+                        "presentIngredients": [
+                          "Fruchtsirup Preiselbeere"
+                        ],
+                        "missingIngredients": [
+                          "Buttermilch"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CocktailSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 26
+          },
+          "name": {
+            "type": "string",
+            "example": "Pink Power"
+          }
+        }
+      },
+      "Ingredient": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 30
+          },
+          "name": {
+            "type": "string",
+            "example": "Buttermilch"
+          }
+        }
+      },
+      "Instruction": {
+        "type": "object",
+        "properties": {
+          "amountCL": {
+            "type": "integer",
+            "example": 15
+          },
+          "ingredient": {
+            "$ref": "#/components/schemas/Ingredient"
+          }
+        }
+      },
+      "CocktailDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CocktailSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Instruction"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "IngredientDetails": {
+        "type": "object",
+        "required": [
+          "name",
+          "cocktails"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Buttermilch"
+          },
+          "cocktails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CocktailSummary"
+            }
+          }
+        }
+      },
+      "FridgeIngredient": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "inFridge"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 30
+          },
+          "name": {
+            "type": "string",
+            "example": "Buttermilch"
+          },
+          "inFridge": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "IngredientStatusUpdate": {
+        "type": "object",
+        "required": [
+          "inFridge"
+        ],
+        "properties": {
+          "inFridge": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "ShoppingModel": {
+        "type": "object",
+        "required": [
+          "cocktailName",
+          "presentIngredients",
+          "missingIngredients"
+        ],
+        "properties": {
+          "cocktailName": {
+            "type": "string",
+            "example": "Pink Power"
+          },
+          "presentIngredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Fruchtsirup Preiselbeere"
+            ]
+          },
+          "missingIngredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Buttermilch"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

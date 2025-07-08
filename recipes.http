@@ -1,0 +1,18 @@
+GET http://localhost:8080/api/cocktails
+Accept: application/json
+
+###
+GET http://localhost:8080/api/cocktails/42
+Accept: application/json
+
+###
+GET http://localhost:8080/api/cocktails/search?query=Pink
+Accept: application/json
+
+###
+GET http://localhost:8080/api/ingredients/30
+Accept: application/json
+
+###
+GET http://localhost:8080/api/ingredients/30/cocktails
+Accept: application/json
