@@ -5,6 +5,7 @@ import com.example.cocktails.model.entity.*;
 import jakarta.ejb.*;
 import jakarta.enterprise.context.*;
 import jakarta.inject.*;
+import jakarta.validation.constraints.*;
 
 import java.io.*;
 import java.util.*;
@@ -16,6 +17,8 @@ public class CocktailSearchBean implements Serializable {
     @EJB
     private RecipeServiceRemote cocktailService;
 
+    @NotBlank(message = "Bitte einen Suchbegriff eingeben.")
+    @Size(min = 3, message = "Bitte mindestens 3 Zeichen eingeben.")
     private String query;
     private Collection<Cocktail> results;
 
@@ -32,12 +35,7 @@ public class CocktailSearchBean implements Serializable {
     }
 
     public void search() {
-        if (query != null && !query.trim().isEmpty()) {
-            // TODO Aufgabe 2:
-            // Suche Cocktails passend zum Suchbegriff über RecipeServiceRemote
-            // und speichere das Ergebnis in "results".
-            results = Collections.emptyList();
-        }
+        results = cocktailService.search(query.trim());
     }
 
 }

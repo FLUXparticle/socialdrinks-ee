@@ -13,6 +13,7 @@
         <h:panelGrid columns="2">
             <h:outputLabel for="query" value="Suchbegriff:" />
             <h:inputText id="query" value="#{cocktailSearchBean.query}" />
+            <h:message for="query" />
         </h:panelGrid>
         <h:commandButton value="Suchen" action="#{cocktailSearchBean.search}" />
     </h:form>

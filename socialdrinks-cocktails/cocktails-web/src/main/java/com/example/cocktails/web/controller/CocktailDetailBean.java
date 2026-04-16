@@ -32,10 +32,7 @@ public class CocktailDetailBean implements Serializable {
 
     public void loadCocktail() {
         if (id != null) {
-            // TODO Aufgabe 1:
-            // Lade hier den ausgewählten Cocktail über RecipeServiceRemote.
-            // Nutze CocktailBean als Beispiel für die EJB-Verwendung.
-            cocktail = null;
+            cocktail = cocktailService.getCocktail(id);
         }
     }
 

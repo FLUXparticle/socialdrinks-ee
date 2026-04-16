@@ -38,11 +38,10 @@ public class IngredientDetailBean implements Serializable {
 
     public void loadIngredient() {
         if (id != null) {
-            // TODO Aufgabe 4:
-            // Lade hier den Detaildatensatz der Zutat über RecipeServiceRemote
-            // und übernimm Name sowie Cocktailliste in die Bean.
-            ingredientName = null;
-            cocktails = Collections.emptyList();
+            IngredientDetails ingredientDetails = cocktailService.getAllCocktailsWithIngredient(id);
+            ingredientName = ingredientDetails.getName();
+            // Finden Sie alle Cocktails, die diese Zutat beinhalten
+            cocktails = ingredientDetails.getCocktails();
         }
     }
 

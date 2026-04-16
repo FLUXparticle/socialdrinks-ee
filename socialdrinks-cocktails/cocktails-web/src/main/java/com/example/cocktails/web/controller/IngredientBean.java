@@ -20,9 +20,7 @@ public class IngredientBean implements Serializable {
 
     public Collection<Ingredient> getIngredients() {
         if (ingredients == null) {
-            // TODO Aufgabe 3:
-            // Lade hier die Zutatenliste über RecipeServiceRemote.
-            ingredients = Collections.emptyList();
+            ingredients = cocktailService.getAllIngredients();
         }
         return ingredients;
     }

@@ -1,9 +1,11 @@
 package com.example.cocktails.fridge.ejb.service;
 
+import com.example.cocktails.cocktail.api.service.*;
 import com.example.cocktails.fridge.api.model.*;
 import com.example.cocktails.fridge.api.service.*;
 import com.example.cocktails.fridge.ejb.model.*;
 import com.example.cocktails.model.entity.*;
+import com.example.cocktails.model.exception.*;
 import jakarta.annotation.*;
 import jakarta.ejb.*;
 import org.slf4j.*;
@@ -11,6 +13,9 @@ import org.slf4j.*;
 import java.security.*;
 import java.util.*;
 import java.util.concurrent.*;
+
+import static java.util.Comparator.*;
+import static java.util.stream.Collectors.*;
 
 @Singleton
 @Remote(FridgeServiceRemote.class)
@@ -20,6 +25,9 @@ public class FridgeService implements FridgeServiceRemote {
 
     private final Map<String, Fridge> userFridges = new ConcurrentHashMap<>();
 
+    @EJB
+    private RecipeServiceRemote cocktailService;
+
     @Resource
     private SessionContext context;
 
@@ -27,6 +35,7 @@ public class FridgeService implements FridgeServiceRemote {
      * Gets the fridge for the specified user, creating it if it doesn't exist.
      * 
      * @return the user's fridge
+     * @throws NotAuthenticatedException if the username is null or empty
      */
     private Fridge getUserFridge() {
         Principal principal = context.getCallerPrincipal();
@@ -48,39 +57,76 @@ public class FridgeService implements FridgeServiceRemote {
 
     @Override
     public Ingredient addIngredient(Long ingredientId) {
-        // TODO Aufgabe 7:
-        // Injiziere hier das RecipeServiceRemote in dieses EJB und
-        // ergänze bei Bedarf die Abhängigkeit auf cocktails-recipe-api im Modul cocktails-fridge-ejb.
-        // Lade dann die Zutat über den Rezept-Service, bevor sie in den Fridge kommt.
-        return null;
+        Ingredient ingredient = cocktailService.getIngredient(ingredientId);
+        if (ingredient != null) {
+            getUserFridge().addIngredient(ingredient);
+        }
+        return ingredient;
     }
 
     @Override
     public Ingredient removeIngredient(Long ingredientId) {
-        // TODO Aufgabe 7:
-        // Entferne hier eine Zutat über dieselbe EJB-Verbindung aus dem Fridge.
-        return null;
+        Ingredient ingredient = cocktailService.getIngredient(ingredientId);
+        if (ingredient != null) {
+            getUserFridge().removeIngredient(ingredient);
+        }
+        return ingredient;
     }
 
     @Override
     public List<Ingredient> getIngredientsNotInFridge() {
-        // TODO Aufgabe 7:
-        // Nutze den Rezept-Service, um alle Zutaten zu laden und mit dem Fridge zu vergleichen.
-        return Collections.emptyList();
+        Set<Ingredient> currentFridge = getFridgeIngredients();
+        return cocktailService.getAllIngredients().stream()
+                .filter(ingredient -> !currentFridge.contains(ingredient))
+                .collect(toList());
     }
 
     @Override
     public List<Cocktail> getPossibleCocktails() {
-        // TODO Aufgabe 7:
-        // Ermittle hier die Cocktails, die mit dem aktuellen Fridge möglich sind.
-        return Collections.emptyList();
+        Set<Ingredient> fridgeIngredients = getFridgeIngredients();
+        List<Cocktail> possibleCocktails = new ArrayList<>();
+        for (Cocktail cocktail : cocktailService.getAllCocktails(true)) {
+            boolean allIngredientsPresent = true;
+            for (Instruction instruction : cocktail.getInstructions()) {
+                if (!fridgeIngredients.contains(instruction.getIngredient())) {
+                    allIngredientsPresent = false;
+                    break;
+                }
+            }
+            if (allIngredientsPresent) {
+                possibleCocktails.add(new Cocktail(cocktail.getId(), cocktail.getName(), null));
+            }
+        }
+        return possibleCocktails;
     }
 
     @Override
     public List<ShoppingModel> getCocktailsWithMissingIngredients() {
-        // TODO Aufgabe 7:
-        // Baue hier die Shopping-Ansicht aus dem Rezept-Service und dem Fridge auf.
-        return Collections.emptyList();
+        Set<Ingredient> currentFridge = getFridgeIngredients();
+        List<ShoppingModel> shoppingList = new ArrayList<>();
+
+        for (Cocktail cocktail : cocktailService.getAllCocktails(true)) {
+            List<String> present = new ArrayList<>();
+            List<String> missing = new ArrayList<>();
+
+            for (Instruction instruction : cocktail.getInstructions()) {
+                Ingredient ingredient = instruction.getIngredient();
+                if (currentFridge.contains(ingredient)) {
+                    present.add(ingredient.getName());
+                } else {
+                    missing.add(ingredient.getName());
+                }
+            }
+
+            if (!missing.isEmpty()) {
+                shoppingList.add(new ShoppingModel(cocktail.getName(), present, missing));
+            }
+        }
+
+        // Sortieren nach Anzahl der fehlenden Zutaten
+        shoppingList.sort(comparingInt(m -> m.getMissingIngredients().size()));
+
+        return shoppingList;
     }
 
 }
