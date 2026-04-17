@@ -22,6 +22,9 @@
             <h:outputText value="Name:" />
             <h:outputText value="#{cocktailDetailBean.cocktail.name}" />
 
+            <h:outputText value="Bewertung:" />
+            <h:outputText value="#{cocktailDetailBean.avgRating}" />
+
             <h:outputText value="Anweisungen:" />
             <h:dataTable value="#{cocktailDetailBean.cocktail.instructions}" var="instruction">
                 <h:column>

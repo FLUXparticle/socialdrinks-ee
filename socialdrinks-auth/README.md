@@ -32,7 +32,7 @@ curl --request POST \
   --header 'content-type: application/x-www-form-urlencoded' \
   --data 'grant_type=authorization_code' \
   --data 'client_id=p49CgVHHEb3324B7nuERA0642yR9mhQ4' \
-  --data 'client_secret=d4S_Mi7ueUzZoybIivVGQlQuXafU8yh0iwrD01Zp8mRX9g2tlfcahujNLqzbDM9e' \
+  --data 'client_secret=CLIENT_SECRET' \
   --data 'code=DER_KOPIERTE_CODE' \
   --data 'redirect_uri=http://localhost:8083/api/callback' \
   --data 'state=xyzABC123'

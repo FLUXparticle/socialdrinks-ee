@@ -2,6 +2,8 @@ package com.example.cocktails.web.controller;
 
 import com.example.cocktails.cocktail.api.service.*;
 import com.example.cocktails.model.entity.*;
+import com.example.cocktails.web.remote.*;
+import com.example.socialdrinks.common.*;
 import jakarta.ejb.*;
 import jakarta.enterprise.context.*;
 import jakarta.inject.*;
@@ -14,6 +16,10 @@ public class CocktailDetailBean implements Serializable {
 
     @EJB
     private RecipeServiceRemote cocktailService;
+
+    @Inject
+    @RatingsClient
+    private RatingInterface ratingInterface;
 
     private Long id;
     private Cocktail cocktail;
@@ -34,6 +40,10 @@ public class CocktailDetailBean implements Serializable {
         if (id != null) {
             cocktail = cocktailService.getCocktail(id);
         }
+    }
+
+    public Integer getAvgRating() {
+        return ratingInterface.getRate(id);
     }
 
 }

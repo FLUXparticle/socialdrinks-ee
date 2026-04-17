@@ -12,7 +12,49 @@
     </parent>
 
     <artifactId>socialdrinks-feed</artifactId>
-    <packaging>pom</packaging>
-    <name>socialdrinks-feed</name>
+    <packaging>war</packaging>
+
+    <build>
+        <finalName>ROOT</finalName>
+        <plugins>
+
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>5.1.5.Final</version>
+                <configuration>
+                    <javaOpts>
+                        <javaOpt>-Djboss.socket.binding.port-offset=5</javaOpt>
+                    </javaOpts>
+                    <jbossHome>${env.JBOSS_HOME}</jbossHome>
+                    <hostname>localhost</hostname>
+                    <port>9995</port>
+                    <skip>false</skip>
+                    <force>true</force>
+                    <timeout>120</timeout>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <dependencies>
+
+        <!-- Jakarta EE 10 API -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>socialdrinks-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
 
 </project>

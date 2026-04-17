@@ -16,6 +16,7 @@
         <module>socialdrinks-gateway</module>
         <module>socialdrinks-cocktails</module>
         <module>socialdrinks-feed</module>
+        <module>socialdrinks-common</module>
     </modules>
 
     <properties>
