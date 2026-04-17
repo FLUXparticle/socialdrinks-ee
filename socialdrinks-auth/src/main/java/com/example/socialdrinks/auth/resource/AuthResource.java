@@ -18,6 +18,7 @@ package com.example.socialdrinks.auth.resource;
 
 import com.example.socialdrinks.auth.service.*;
 import com.nimbusds.jwt.*;
+import jakarta.annotation.security.*;
 import jakarta.inject.*;
 import jakarta.json.*;
 import jakarta.ws.rs.*;
@@ -47,14 +48,23 @@ public class AuthResource {
 
     @GET
     @Path("/customer")
+    @RolesAllowed("customer")
     public String getCustomerJSON() {
         return "{\"path\":\"customer\",\"result\":" + sayHello() + "}";
     }
 
     @GET
+    @Path("/user")
+    @RolesAllowed("user")
+    public String getUserJSON() {
+        return "{\"path\":\"user\",\"result\":" + sayHello() + "}";
+    }
+
+    @GET
     @Path("/admin")
-    public String getProtectedJSON() {
-        return "{\"path\":\"protected\",\"result\":" + sayHello() + "}";
+    @RolesAllowed("admin")
+    public String getAdminJSON() {
+        return "{\"path\":\"admin\",\"result\":" + sayHello() + "}";
     }
 
     @GET
@@ -64,6 +74,7 @@ public class AuthResource {
     }
 
     @GET
+    @PermitAll
     @Path("/claims")
     public Response demonstrateClaims(@HeaderParam("Authorization") String auth) {
         if (auth != null && auth.startsWith("Bearer ")) {

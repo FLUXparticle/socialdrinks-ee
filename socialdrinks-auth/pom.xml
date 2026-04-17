@@ -30,17 +30,12 @@
                     <layers>
                         <layer>logging</layer>
                         <layer>ee-core-profile-server</layer>
+                        <layer>microprofile-jwt</layer>
+                        <layer>microprofile-config</layer>
                     </layers>
                     <excluded-layers>
                         <!--                        <layer>deployment-scanner</layer>-->
                     </excluded-layers>
-                    <cli-sessions>
-                        <cli-session>
-                            <script-files>
-                                <script>scripts/configure-jwt.cli</script>
-                            </script-files>
-                        </cli-session>
-                    </cli-sessions>
                     <extra-server-content-dirs>
                         <extra-content>extra-content</extra-content>
                     </extra-server-content-dirs>
@@ -65,6 +60,21 @@
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- MicroProfile -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.smallrye</groupId>
+            <artifactId>smallrye-jwt</artifactId>
+            <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
 
