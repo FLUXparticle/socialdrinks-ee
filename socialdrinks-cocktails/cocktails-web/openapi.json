@@ -296,47 +296,6 @@
         }
       }
     },
-    "/api/fridge/whoami": {
-      "get": {
-        "tags": [
-          "Fridge"
-        ],
-        "summary": "Aktuellen Benutzer anzeigen",
-        "operationId": "whoAmI",
-        "responses": {
-          "200": {
-            "description": "Benutzer erkannt",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "default": {
-                    "value": "Hallo anonymous"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Kein Benutzer erkannt",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "default": {
-                    "value": "Nicht eingeloggt"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/fridge/ingredients": {
       "get": {
         "tags": [
@@ -492,56 +451,6 @@
           }
         }
       }
-    },
-    "/api/fridge/shopping": {
-      "get": {
-        "tags": [
-          "Fridge"
-        ],
-        "summary": "Cocktails mit fehlenden Zutaten abrufen",
-        "description": "Liefert für nicht mögliche Cocktails die bereits vorhandenen und die noch fehlenden Zutaten. Für diese verschachtelte Struktur enthält die Definition ein explizites Beispiel.",
-        "operationId": "getCocktailsWithMissingIngredients",
-        "responses": {
-          "200": {
-            "description": "Shopping-Ansicht",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ShoppingModel"
-                  }
-                },
-                "examples": {
-                  "default": {
-                    "value": [
-                      {
-                        "cocktailName": "Summerfeeling",
-                        "presentIngredients": [
-                          "Fruchtsirup Preiselbeere"
-                        ],
-                        "missingIngredients": [
-                          "Pfirsichnektar",
-                          "Ananassaft"
-                        ]
-                      },
-                      {
-                        "cocktailName": "Pink Power",
-                        "presentIngredients": [
-                          "Fruchtsirup Preiselbeere"
-                        ],
-                        "missingIngredients": [
-                          "Buttermilch"
-                        ]
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -663,38 +572,6 @@
           "inFridge": {
             "type": "boolean",
             "example": true
-          }
-        }
-      },
-      "ShoppingModel": {
-        "type": "object",
-        "required": [
-          "cocktailName",
-          "presentIngredients",
-          "missingIngredients"
-        ],
-        "properties": {
-          "cocktailName": {
-            "type": "string",
-            "example": "Pink Power"
-          },
-          "presentIngredients": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "Fruchtsirup Preiselbeere"
-            ]
-          },
-          "missingIngredients": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "Buttermilch"
-            ]
           }
         }
       }
